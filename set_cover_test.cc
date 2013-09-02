@@ -85,8 +85,8 @@ TEST_F(SetCoverTest, SetUp) {
       SetProcessingInfo sp = sc_->set_processing_infos_->at("cat");
       EXPECT_EQ(2, sp.num_uncovered);
       EXPECT_EQ(2, sp.covers_rules.size());
-      EXPECT_EQ(0, sp.covers_rules[0]);
-      EXPECT_EQ(1, sp.covers_rules[1]);
+      EXPECT_TRUE(sp.covers_rules.find(0) != sp.covers_rules.end());
+      EXPECT_TRUE(sp.covers_rules.find(1) != sp.covers_rules.end());
     }
     
   }

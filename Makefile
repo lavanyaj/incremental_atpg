@@ -37,7 +37,7 @@ clean :
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = ordered_map set_cover greedy_set_cover
+TESTS = ordered_map set_cover greedy_set_cover lazy_set_cover
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -65,4 +65,13 @@ greedy_set_cover_test.o : greedy_set_cover_test.cc greedy_set_cover.h set_cover.
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c greedy_set_cover_test.cc
 
 greedy_set_cover_test : set_cover.o greedy_set_cover.o greedy_set_cover_test.o
+	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+
+lazy_set_cover.o : lazy_set_cover.cc lazy_set_cover.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c lazy_set_cover.cc
+
+lazy_set_cover_test.o : lazy_set_cover_test.cc lazy_set_cover.h set_cover.h 
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c lazy_set_cover_test.cc
+
+lazy_set_cover_test : set_cover.o lazy_set_cover.o lazy_set_cover_test.o
 	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@

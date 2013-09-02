@@ -1,9 +1,11 @@
 #include "set_cover.h"
 
+#include <set>
 #include <vector>
 #include <string>
 #include <stdlib.h>
 #include <memory>
+#include <list>
 #include <log4cxx/logger.h>
 
 namespace incremental_atpg {
@@ -11,7 +13,8 @@ namespace incremental_atpg {
   using std::string;
   using std::unique_ptr;
   using std::make_pair;
-
+  using std::list;
+  using std::set;
   using log4cxx::LoggerPtr;
   using log4cxx::Logger;
   using log4cxx::Level;
@@ -23,7 +26,7 @@ namespace incremental_atpg {
       rule_infos_(rule_infos),
       set_processing_infos_(new map<string, SetProcessingInfo>),
       rule_processing_infos_(new vector<RuleProcessingInfo>),
-      cover_(new vector<string>) {
+      cover_(new list<string>) {
     set_cover_logger = Logger::getLogger("SetCover");
     set_cover_logger->setLevel(log4cxx::Level::getWarn());
     set_cover_logger->setLevel(log4cxx::Level::getWarn());
@@ -60,7 +63,7 @@ namespace incremental_atpg {
     return *rule_processing_infos_.get();
   }
 
-  vector<string> SetCover::GetCover() const {
+  list<string> SetCover::GetCover() const {
     return *cover_.get();
   }
 
@@ -112,7 +115,7 @@ namespace incremental_atpg {
 		       << " already covered before set " << set_id);
 	} else {
 	  rule_processing_infos_->at(rule_id).first_covered_by = set_id;
-	  spIt->second.covers_rules.push_back(rule_id);
+	  spIt->second.AddRule(rule_id);
 	  --num_uncovered_rules;
 	}
       }

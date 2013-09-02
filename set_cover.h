@@ -1,9 +1,11 @@
 #ifndef INCREMENTAL_ATPG_SET_COVER_H_
 #define INCREMENTAL_ATPG_SET_COVER_H_
 #include <vector>
+#include <set>
 #include <string>
 #include <memory>
 #include <map>
+#include <list>
 #include <stdint.h>
 #include <log4cxx/logger.h>
 
@@ -14,7 +16,8 @@ namespace incremental_atpg {
   using std::string;
   using std::unique_ptr;
   using std::map;
-
+  using std::list;
+  using std::set;
   using log4cxx::LoggerPtr;
   using log4cxx::Logger;
   using log4cxx::Level;
@@ -29,14 +32,22 @@ namespace incremental_atpg {
   struct SetProcessingInfo {
     // Maintained by the set cover algorithms for sets in cover.
     // Number of rules not in cover, that this set covers.
-    vector<uint64_t> covers_rules;
+    set<uint64_t> covers_rules;
     // Number of uncovered rules just before this set
     // was added to cover.
     uint64_t num_uncovered;
     void AddRule(uint64_t new_rule) {
-      covers_rules.push_back(new_rule);
+      covers_rules.insert(new_rule);
     }
-
+    void RemoveRule(uint64_t rule) {
+      covers_rules.erase(rule);
+    }
+    uint64_t GetNumRules() const {
+      return covers_rules.size();
+    }
+    set<uint64_t> GetRules() const {
+      return covers_rules;
+    }
   };
 
   struct RuleInfo {
@@ -65,7 +76,7 @@ namespace incremental_atpg {
       rule_infos_(new vector<RuleInfo>),
       set_processing_infos_(new map<string, SetProcessingInfo>),
       rule_processing_infos_(new vector<RuleProcessingInfo>),
-      cover_(new vector<string>) {
+      cover_(new list<string>) {
       set_cover_logger = Logger::getLogger("SetCover");
       set_cover_logger->setLevel(log4cxx::Level::getWarn());
 
@@ -77,7 +88,7 @@ namespace incremental_atpg {
 
     // Update @set_infos_ and @rule_infos_ for new rule.
     void AddRule(const vector<string>& sets);
-    vector<string> GetCover() const;
+    list<string> GetCover() const;
     map<string, SetInfo> GetSetInfos() const;
     vector<RuleInfo> GetRuleInfos() const;
     map<string, SetProcessingInfo> GetSetProcessingInfos() const;
@@ -95,7 +106,7 @@ namespace incremental_atpg {
     unique_ptr<vector<RuleInfo> > rule_infos_;
     unique_ptr<map<string, SetProcessingInfo> > set_processing_infos_;
     unique_ptr<vector<RuleProcessingInfo> > rule_processing_infos_;
-    unique_ptr<vector<string> > cover_;
+    unique_ptr<list<string> > cover_;
   private:
     friend class SetCoverTest;
     FRIEND_TEST(SetCoverTest, SetUp);

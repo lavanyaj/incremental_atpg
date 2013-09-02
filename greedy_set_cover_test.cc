@@ -119,12 +119,14 @@ namespace incremental_atpg {
     sc_->AddRule({"cat"});
     sc_->UpdateCover();
     EXPECT_EQ(1, sc_->cover_->size());
-    EXPECT_EQ("cat", sc_->cover_->at(0));
+    EXPECT_EQ("cat", sc_->cover_->back());
 
     sc_->AddRule({"jam"});
     sc_->UpdateCover();
     EXPECT_EQ(2, sc_->cover_->size());
-    EXPECT_EQ("cat", sc_->cover_->at(0));
-    EXPECT_EQ("jam", sc_->cover_->at(1));
+    EXPECT_EQ("jam", sc_->cover_->back());
+    sc_->cover_->pop_back();
+    EXPECT_EQ("cat", sc_->cover_->back());
+    sc_->cover_->pop_back();
   }
 }  // namespace incremental_atpg

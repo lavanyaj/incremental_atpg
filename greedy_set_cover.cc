@@ -170,14 +170,7 @@ namespace incremental_atpg {
       // TODO(lav): Add to test.
       // Aha! When you pop a key and try to change its handle!
       UpdateSetsInHeap(key_changes);
-    }	
-	     
-    // get max
-    // Online, sorry!
-    // Get best set, when to insert
-    // InsertWhen(set_id, num_uncovered);
-    // also updates processing info
-    
+    }	    
   }
  
 
