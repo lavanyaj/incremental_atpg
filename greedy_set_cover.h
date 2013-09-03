@@ -57,6 +57,12 @@ namespace incremental_atpg {
     GreedySetCover();
     GreedySetCover(map<string, SetInfo>* set_infos,
 		     vector<RuleInfo>* rule_infos);
+    GreedySetCover(map<string, SetInfo>* set_infos,
+		   vector<RuleInfo>* rule_infos,
+		   map<string, SetProcessingInfo>* set_processing_infos,
+		   vector<RuleProcessingInfo>* rule_processing_infos,
+		   list<string>* cover);
+
     // AddRule inherited from SetCover.
     // Get..ProcessingInfo also.
     // Finds set cover from scratch for rules in latest @rule_infos_.

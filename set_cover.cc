@@ -67,6 +67,26 @@ namespace incremental_atpg {
     return *cover_.get();
   }
 
+  map<string, SetInfo>* SetCover::ReleaseSetInfos() {
+    return set_infos_.release();
+  }
+
+  vector<RuleInfo>* SetCover::ReleaseRuleInfos() {
+    return rule_infos_.release();
+  }
+
+  map<string, SetProcessingInfo>* SetCover::ReleaseSetProcessingInfos() {
+    return set_processing_infos_.release();
+  }
+
+  vector<RuleProcessingInfo>* SetCover::ReleaseRuleProcessingInfos() {
+    return rule_processing_infos_.release();
+  }
+
+  list<string>* SetCover::ReleaseCover() {
+    return cover_.release();
+  }
+
   void SetCover::ResetProcessingInfo() {
     set_processing_infos_.reset(new map<string, SetProcessingInfo>);
     rule_processing_infos_.reset(new vector<RuleProcessingInfo>);

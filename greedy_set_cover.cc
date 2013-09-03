@@ -38,6 +38,19 @@ namespace incremental_atpg {
     greedy_set_cover_logger->setLevel(log4cxx::Level::getWarn());
     }
 
+  GreedySetCover::GreedySetCover(map<string, SetInfo>* set_infos,
+				 vector<RuleInfo>* rule_infos,
+				 map<string, SetProcessingInfo>* set_processing_infos,
+				 vector<RuleProcessingInfo>* rule_processing_infos,
+				 list<string>* cover)
+    : SetCover(set_infos, rule_infos, set_processing_infos, 
+	       rule_processing_infos, cover),
+      heap_(new fibonacci_heap<heap_data>),
+      handles_(new map<string, pair<handle_t, uint64_t> >) {
+    greedy_set_cover_logger = Logger::getLogger("GreedySetCover");
+    greedy_set_cover_logger->setLevel(log4cxx::Level::getWarn());
+    }
+
   void GreedySetCover::AddAllSetsToHeap() {
     // add all sets to heap
     uint64_t uncovered;
@@ -51,7 +64,7 @@ namespace incremental_atpg {
       uncovered = set_info.second.all_rules.size();
       ht = heap_->push(heap_data(set_info.first, uncovered));
       handle_value = make_pair(ht, uncovered);
-      LOG4CXX_WARN(greedy_set_cover_logger, "Updating handles_ with " << set_info.first 
+      LOG4CXX_INFO(greedy_set_cover_logger, "Updating handles_ with " << set_info.first 
 		   << " - ( x, " << handle_value.second << ").");
       handles_->operator[](set_info.first) = handle_value;
     }
@@ -74,7 +87,7 @@ namespace incremental_atpg {
     map<string, SetProcessingInfo>::iterator spIt;
     if ((spIt = set_processing_infos_->find(set_name))
 	!= set_processing_infos_->end()) {
-      LOG4CXX_INFO(set_cover_logger, "Set " << set_name << " duplicate in cover.");
+      LOG4CXX_WARN(set_cover_logger, "Set " << set_name << " duplicate in cover.");
       return;
     }
 
@@ -120,13 +133,15 @@ namespace incremental_atpg {
   }
 
   void GreedySetCover::UpdateSetsInHeap(const map<string, uint64_t>& key_changes) {
-    LOG4CXX_WARN(greedy_set_cover_logger,
+    LOG4CXX_INFO(greedy_set_cover_logger,
 		 key_changes.size() << " keys to update in heap.");
 
     for (auto const& change: key_changes) {
       if (handles_->find(change.first) == handles_->end()) {
-	LOG4CXX_WARN(greedy_set_cover_logger, "Key " << change.first
-		     << " no longer in handles_. Popped out?");
+	if (change.first != cover_->back()) {
+	    LOG4CXX_WARN(greedy_set_cover_logger, "Key " << change.first
+			 << " no longer in handles_. Popped out?");
+	  }
 	continue;
       }
       pair<handle_t, uint64_t>& handle_value = handles_->at(change.first);
@@ -140,7 +155,7 @@ namespace incremental_atpg {
       heap_data new_heap_data(change.first, new_value);
       handles_->operator[](change.first) = make_pair(h, new_value);
       heap_->decrease(h, new_heap_data);
-      LOG4CXX_WARN(greedy_set_cover_logger, "Updated handle to " << *h << ".");
+      LOG4CXX_INFO(greedy_set_cover_logger, "Updated handle to " << *h << ".");
     }
   }
 
@@ -160,7 +175,7 @@ namespace incremental_atpg {
 
       cover_->push_back(data.key);
 
-      LOG4CXX_WARN(greedy_set_cover_logger,
+      LOG4CXX_INFO(greedy_set_cover_logger,
 		 "Pushed back " << data.key << " on cover.");
 
       map<string, uint64_t> key_changes;

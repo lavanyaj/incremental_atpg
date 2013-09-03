@@ -81,6 +81,21 @@ namespace incremental_atpg {
       set_cover_logger->setLevel(log4cxx::Level::getWarn());
 
     }
+    // Takes ownership of all @.._infos. Avoids copying when
+    // we're switching between two kinds.
+    SetCover(map<string, SetInfo>* set_infos,
+	     vector<RuleInfo>* rule_infos,
+	     map<string, SetProcessingInfo>* set_processing_infos,
+	     vector<RuleProcessingInfo>* rule_processing_infos,
+	     list<string>* cover)
+      : set_infos_(set_infos),
+      rule_infos_(rule_infos),
+      set_processing_infos_(set_processing_infos),
+      rule_processing_infos_(rule_processing_infos),
+      cover_(cover) {
+      set_cover_logger = Logger::getLogger("SetCover");
+      set_cover_logger->setLevel(log4cxx::Level::getWarn());
+      }      
 
     // For testing.
     explicit SetCover(map<string, SetInfo>* set_infos,
@@ -93,6 +108,12 @@ namespace incremental_atpg {
     vector<RuleInfo> GetRuleInfos() const;
     map<string, SetProcessingInfo> GetSetProcessingInfos() const;
     vector<RuleProcessingInfo> GetRuleProcessingInfos() const;
+
+    list<string>* ReleaseCover();
+    map<string, SetInfo>* ReleaseSetInfos();
+    vector<RuleInfo>* ReleaseRuleInfos();
+    map<string, SetProcessingInfo>* ReleaseSetProcessingInfos();
+    vector<RuleProcessingInfo>* ReleaseRuleProcessingInfos();
 
   protected:
 

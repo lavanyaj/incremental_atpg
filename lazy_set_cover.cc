@@ -45,6 +45,18 @@ namespace incremental_atpg {
     lazy_set_cover_logger->setLevel(log4cxx::Level::getWarn());
   }
 
+  LazySetCover::LazySetCover(map<string, SetInfo>* set_infos,
+			     vector<RuleInfo>* rule_infos,
+			     map<string, SetProcessingInfo>* set_processing_infos,
+			     vector<RuleProcessingInfo>* rule_processing_infos,
+			     list<string>* cover)
+    : SetCover(set_infos, rule_infos, set_processing_infos, 
+	       rule_processing_infos, cover),
+      cover_order_ (new map<string, uint64_t>) {
+    lazy_set_cover_logger = Logger::getLogger("LazySetCover");
+    lazy_set_cover_logger->setLevel(log4cxx::Level::getWarn());
+  }  
+
 
   string LazySetCover::InsertNewSet(pair<string, uint64_t> best_move_up) {
     if (best_move_up.first.empty()) {

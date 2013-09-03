@@ -25,8 +25,16 @@ namespace incremental_atpg {
   public:
     log4cxx::LoggerPtr lazy_set_cover_logger;
     LazySetCover();
+    // Takes ownership of @set_infos..
     LazySetCover(map<string, SetInfo>* set_infos,
 		     vector<RuleInfo>* rule_infos);
+    // Takes ownership of @..._infos and @cover
+    LazySetCover(map<string, SetInfo>* set_infos,
+		 vector<RuleInfo>* rule_infos,
+		 map<string, SetProcessingInfo>* set_processing_infos,
+		 vector<RuleProcessingInfo>* rule_processing_infos,
+		 list<string>* cover);
+
     // AddRule inherited from SetCover.
     // Get..ProcessingInfo also.
 

@@ -75,3 +75,12 @@ lazy_set_cover_test.o : lazy_set_cover_test.cc lazy_set_cover.h set_cover.h
 
 lazy_set_cover_test : set_cover.o lazy_set_cover.o lazy_set_cover_test.o
 	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+
+online_set_cover.o : online_set_cover.cc online_set_cover.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c online_set_cover.cc
+
+online_set_cover_test.o : online_set_cover_test.cc online_set_cover.h set_cover.h 
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c online_set_cover_test.cc
+
+online_set_cover_test : set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o online_set_cover_test.o
+	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
