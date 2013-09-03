@@ -30,7 +30,9 @@ namespace incremental_atpg {
   OnlineSetCover()
     : gr_(nullptr),
       adds_(0),
-      updates_(0) {
+      updates_(0),
+      best_greedy_fraction_(1.0),
+      greedy_updates_(0) {
       online_set_cover_logger = Logger::getLogger("OnlineSetCover");
       online_set_cover_logger->setLevel(log4cxx::Level::getWarn());
     }
@@ -41,20 +43,29 @@ namespace incremental_atpg {
     : LazySetCover(set_infos, rule_infos),
       gr_(nullptr),
       adds_(0),
-      updates_(0) {
+      updates_(0),
+      best_greedy_fraction_(1.0),
+      greedy_updates_(0)  {
       online_set_cover_logger = Logger::getLogger("OnlineSetCover");
       online_set_cover_logger->setLevel(log4cxx::Level::getWarn());
     }
 
     void AddRule(const vector<string>& sets);
+    void GreedyUpdateCover();
     void UpdateCover();
+    void ShowStats();
     bool SanityCheck();
 
   protected:
     unique_ptr<GreedySetCover> gr_;
-    bool GoodEnough(const list<string>& cover);
+    bool NoNullPtrs();
+    bool GetMin(double* min);
+    bool GetSum(double* sum);
+    bool GoodEnough();
     uint64_t adds_;
     uint64_t updates_;
+    double best_greedy_fraction_;
+    uint64_t greedy_updates_;
   private:
     friend class OnlineSetCoverTest;
     FRIEND_TEST(OnlineSetCoverTest, UpdateCover);

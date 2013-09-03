@@ -99,7 +99,7 @@ namespace incremental_atpg {
     }
 
     if (cover_->size() == 0) {
-      LOG4CXX_WARN(set_cover_logger,
+      LOG4CXX_INFO(set_cover_logger,
 		   "Cover is empty.");
       return;
     }
