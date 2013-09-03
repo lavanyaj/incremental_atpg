@@ -74,7 +74,7 @@ namespace incremental_atpg {
   void GreedySetCover::UpdateProcessingInfo(uint64_t* num_covered,
 					     map<string, uint64_t>* key_changes) {
     if (cover_->size() == 0) {
-      LOG4CXX_WARN(greedy_set_cover_logger,
+      LOG4CXX_INFO(greedy_set_cover_logger,
 		   "Cover is empty.");
       return;
     }
@@ -95,7 +95,7 @@ namespace incremental_atpg {
     int diff = rule_infos_->size() - rule_processing_infos_->size();
     RuleProcessingInfo uncovered_rule;
     if (diff != 1) {
-	LOG4CXX_WARN(set_cover_logger, diff << " new rules since last update.");
+	LOG4CXX_INFO(set_cover_logger, diff << " new rules since last update.");
     }
     while (diff > 0) {
       rule_processing_infos_->push_back(uncovered_rule);
