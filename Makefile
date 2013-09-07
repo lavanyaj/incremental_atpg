@@ -82,5 +82,23 @@ online_set_cover.o : online_set_cover.cc online_set_cover.h
 online_set_cover_test.o : online_set_cover_test.cc online_set_cover.h set_cover.h 
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c online_set_cover_test.cc
 
-online_set_cover_test : set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o online_set_cover_test.o
+online_set_cover_test : set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o online_set_cover_test.o 
+	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+
+util.o : util.cc util.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c util.cc
+
+util_test.o : util_test.cc util.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c util_test.cc
+
+util_test : util.o util_test.o 
+	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+
+evaluate.o : evaluate.cc evaluate.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c evaluate.cc
+
+evaluate_test.o : evaluate_test.cc evaluate.h
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c evaluate_test.cc
+
+evaluate_test : evaluate.o evaluate_test.o set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o util.o
 	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
