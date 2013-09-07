@@ -33,7 +33,7 @@ TEST_F(UtilTest, MakeRules) {
   // most sets should have 1-5 rules, a few have close to 30
   // all rules have many sets, few sets that are in all rules.
   // TODO(lav): Most sets have too many rules. Flip!?
-  util->MakeRules(70, 30, 70, Util::zipf_1, &sets);
+  //  util->MakeRules(7000, 3000, 20, Util::zipf_1, &sets);
   //  util->ShowRulesPerSet(sets);
 }
 
@@ -43,13 +43,13 @@ TEST_F(UtilTest, WriteRulesToFile) {
   // most sets should have 1-5 rules, a few have close to 30
   // all rules have many sets, few sets that are in all rules.
   // TODO(lav): Most sets have too many rules. Flip!?
-  util->MakeRules(70, 30, 70, Util::zipf_1, &sets);
+  util->MakeRules(700000, 300000, 200, Util::zipf_1, &sets);
   util->WriteRulesToFile(sets, "tmp/WriteRulesToFileTest.out");
 }
 
 TEST_F(UtilTest, ReadRulesFromFile) {
   vector<vector<string> > sets;
-  util->ReadRulesFromFile("tmp/WriteRulesToFileTest.out", &sets);
+  //  util->ReadRulesFromFile("tmp/WriteRulesToFileTest.out", &sets);
   //  util->ShowSetsPerRule(sets);
 }
  

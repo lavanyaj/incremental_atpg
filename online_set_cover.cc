@@ -44,25 +44,6 @@ namespace incremental_atpg {
     LazySetCover::AddRule(sets);
   }
 
-  void OnlineSetCover::GreedyUpdateCover() {
-    if (updates_ + 1 != adds_) {
-      LOG4CXX_WARN(online_set_cover_logger, "Update once after add.");
-      return;
-    }
-    ++updates_;
-    gr_.reset(new GreedySetCover(set_infos_.release(),
-				   rule_infos_.release()));
-    ++greedy_updates_;
-    gr_->UpdateCover();
-
-    set_infos_.reset(gr_->ReleaseSetInfos());
-    rule_infos_.reset(gr_->ReleaseRuleInfos());
-    set_processing_infos_.reset(gr_->ReleaseSetProcessingInfos());
-    rule_processing_infos_.reset(gr_->ReleaseRuleProcessingInfos());
-    cover_.reset(gr_->ReleaseCover());
-    gr_.reset(nullptr);
-  }
-
   void OnlineSetCover::UpdateCover() {
     if (updates_ + 1 != adds_) {
       LOG4CXX_WARN(online_set_cover_logger, "Update once after add.");

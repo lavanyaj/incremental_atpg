@@ -79,6 +79,8 @@ namespace incremental_atpg {
 		 << "  took " << double(now - last) / CLOCKS_PER_SEC
 		 << " seconds.");
 
+    begin = clock();
+    time_taken = 0;
     gr_.reset(nullptr);
     while(num_rules_seen < total_rules && time_taken < for_time) {
       const vector<string>& rule = sets_[num_rules_seen];
@@ -101,6 +103,10 @@ namespace incremental_atpg {
       }
     }
       	  on_->ShowStats();
+	  LOG4CXX_WARN(evaluate_logger, "Online could process "
+		       << num_rules_added - from_num_rules
+		       << " new rules in " << for_time << " seconds."
+		       << " starting from " << from_num_rules);
   }
 
 }  // namespace incremental_atpg

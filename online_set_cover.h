@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <list>
 #include <set>
 #include <map>
 #include <stdint.h>
@@ -22,6 +23,7 @@ namespace incremental_atpg {
   using std::make_pair;
   using std::pair;
   using std::set;
+  using std::list;
 
   class OnlineSetCover : public LazySetCover {
   public:
@@ -32,7 +34,8 @@ namespace incremental_atpg {
       adds_(0),
       updates_(0),
       best_greedy_fraction_(1.0),
-      greedy_updates_(0) {
+      greedy_updates_(0),
+      greedy_adds_(0) {
       online_set_cover_logger = Logger::getLogger("OnlineSetCover");
       online_set_cover_logger->setLevel(log4cxx::Level::getWarn());
     }
@@ -45,13 +48,30 @@ namespace incremental_atpg {
       adds_(0),
       updates_(0),
       best_greedy_fraction_(1.0),
-      greedy_updates_(0)  {
+      greedy_updates_(0),
+      greedy_adds_(0)  {
+      online_set_cover_logger = Logger::getLogger("OnlineSetCover");
+      online_set_cover_logger->setLevel(log4cxx::Level::getWarn());
+    }
+
+  OnlineSetCover(map<string, SetInfo>* set_infos,
+		 vector<RuleInfo>* rule_infos,
+		 map<string, SetProcessingInfo>* set_processing_infos,
+		 vector<RuleProcessingInfo>* rule_processing_infos,
+		 list<string>* cover)
+    : LazySetCover(set_infos, rule_infos, set_processing_infos,
+		   rule_processing_infos, cover),
+      gr_(nullptr),
+      adds_(0),
+      updates_(0),
+      best_greedy_fraction_(1.0),
+      greedy_updates_(0),
+      greedy_adds_(0)  {
       online_set_cover_logger = Logger::getLogger("OnlineSetCover");
       online_set_cover_logger->setLevel(log4cxx::Level::getWarn());
     }
 
     void AddRule(const vector<string>& sets);
-    void GreedyUpdateCover();
     void UpdateCover();
     void ShowStats();
     bool SanityCheck();
@@ -66,6 +86,7 @@ namespace incremental_atpg {
     uint64_t updates_;
     double best_greedy_fraction_;
     uint64_t greedy_updates_;
+    uint64_t greedy_adds_;
   private:
     friend class OnlineSetCoverTest;
     FRIEND_TEST(OnlineSetCoverTest, UpdateCover);
