@@ -36,7 +36,7 @@ namespace incremental_atpg {
     : gr_(nullptr),
       on_(nullptr) {
       evaluate_logger = Logger::getLogger("Evaluate");
-      evaluate_logger->setLevel(log4cxx::Level::getWarn());
+      evaluate_logger->setLevel(log4cxx::Level::getInfo());
     }
 
     // Takes ownership of @set_infos..

@@ -51,22 +51,21 @@ namespace incremental_atpg {
       }
     }
     uint64_t time_taken = 0;
-
     clock_t now = clock();
-    last = now;
-    LOG4CXX_WARN(evaluate_logger, "Finished adding " << num_rules_added
-		 << " rules to Greedy: " << double(now-begin)/CLOCKS_PER_SEC);
+    time_taken = double(now-begin)/CLOCKS_PER_SEC;
+    LOG4CXX_WARN(evaluate_logger, "Adding " << num_rules_added
+		 << " rules to Greedy took " 
+		 << time_taken << " seconds");
+    
+    begin = now;
     gr_->UpdateCover();
-
     now = clock();
     time_taken = double(now-begin)/CLOCKS_PER_SEC;
     LOG4CXX_WARN(evaluate_logger, "Finished updating GreedySetCover: " 
-		 << time_taken
-		 << "  which took " << double(now - last) / CLOCKS_PER_SEC
+		 << "  which took " << time_taken
 		 << " seconds.");
     
-    last = now;
-
+    begin = now;
     on_.reset(new OnlineSetCover(
 				gr_->ReleaseSetInfos(),
 				gr_->ReleaseRuleInfos(),
@@ -76,11 +75,12 @@ namespace incremental_atpg {
     now = clock();
     time_taken = double(now-begin)/CLOCKS_PER_SEC;
     LOG4CXX_WARN(evaluate_logger, "Setting up OnlineSetCover: " 
-		 << "  took " << double(now - last) / CLOCKS_PER_SEC
+		 << "  took " << double(now - begin) / CLOCKS_PER_SEC
 		 << " seconds.");
 
-    begin = clock();
-    time_taken = 0;
+    begin = now;
+    now = clock();
+    time_taken = double(now-begin)/CLOCKS_PER_SEC;
     gr_.reset(nullptr);
     while(num_rules_seen < total_rules && time_taken < for_time) {
       const vector<string>& rule = sets_[num_rules_seen];
@@ -90,13 +90,13 @@ namespace incremental_atpg {
 	num_rules_added++;
 	on_->UpdateCover();
 
-	if (num_rules_added % 100 == 0) {
+	if (num_rules_added % 2 == 0) {
 	  now = clock();
 	  time_taken = double(now-begin)/CLOCKS_PER_SEC;
 	  LOG4CXX_WARN(evaluate_logger, "Updated for rule #" << num_rules_added
 		       << " at time: " << double(now - begin) / CLOCKS_PER_SEC
 		       << " i.e., " << double(now - last) / CLOCKS_PER_SEC
-		       << " seconds for last 100 rules.");
+		       << " seconds for last 2 rules.");
 	  last = now;
 	  on_->ShowStats();
 	}
@@ -105,7 +105,7 @@ namespace incremental_atpg {
       	  on_->ShowStats();
 	  LOG4CXX_WARN(evaluate_logger, "Online could process "
 		       << num_rules_added - from_num_rules
-		       << " new rules in " << for_time << " seconds."
+		       << " new rules in " << time_taken << " seconds."
 		       << " starting from " << from_num_rules);
   }
 
