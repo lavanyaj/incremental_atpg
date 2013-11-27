@@ -14,49 +14,52 @@
 
 # Points to the root of Google Test, relative to where this file is.
 # Remember to tweak this if you move this file.
-GTEST_DIR = /usr/local/gtest-1.6.0
+#GTEST_DIR = /usr/local/gtest-1.6.0
+GTEST_DIR = /opt/google/googletest-read-only
 
-CXX = /opt/local/bin/x86_64-apple-darwin11-g++-mp-4.7
+#CXX = /opt/local/bin/x86_64-apple-darwin11-g++-mp-4.7
+#CXX = /usr/bin/x86_64-linux-gnu-g++-4.6
+CXX = /usr/bin/g++
 
 # Where to find user code.
 USER_DIR = .
-
-# Flags passed to the preprocessor.
-CPP_INCLUDE_FLAGS += -I$(GTEST_DIR) -I$(GTEST_DIR)/include -I/opt/local/include 
-CPP_LIB_FLAGS += -L/opt/local/lib -llog4cxx -pthread -lgtest_main
-
-# Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -std=c++0x
-
-# House-keeping build targets.
-
-all : $(TESTS)
-
-clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
-
-# All tests produced by this Makefile.  Remember to add new tests you
-# created to the list.
-TESTS = ordered_map set_cover greedy_set_cover lazy_set_cover
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 
+# Flags passed to the preprocessor.
+CPP_INCLUDE_FLAGS += -isystem$(GTEST_DIR)/include  -I$(GTEST_DIR) -I/usr/include/boost
+CPP_LIB_FLAGS += -L/usr/lib -llog4cxx -lstdc++ -lapr-1 -laprutil-1 -lpthread -lgtest_main
+
+# Flags passed to the C++ compiler.
+CXXFLAGS += -g -Wall -Wextra -std=c++0x
+
+# All tests produced by this Makefile.  Remember to add new tests you
+# created to the list.
+TESTS = set_cover_test greedy_set_cover_test lazy_set_cover_test util_test evaluate_test
+
+# House-keeping build targets.
+
+all : $(TESTS)
+
+clean :
+	rm -f $(TESTS) *.o
+
+
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
-# function.
-
+# function. I added libgtest.so and libgtest_main.so. So just -lgtest etc.
 
 set_cover.o : set_cover.cc set_cover.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c set_cover.cc
 
 set_cover_test.o : set_cover_test.cc set_cover.h
-	$(CXX) $(CPPF_INCLUDE_LAGS) $(CXXFLAGS) -c set_cover_test.cc
+	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c set_cover_test.cc
 
 set_cover_test : set_cover.o set_cover_test.o
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ $(CPP_LIB_FLAGS) -o $@
 
 greedy_set_cover.o : greedy_set_cover.cc greedy_set_cover.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c greedy_set_cover.cc
@@ -65,7 +68,7 @@ greedy_set_cover_test.o : greedy_set_cover_test.cc greedy_set_cover.h set_cover.
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c greedy_set_cover_test.cc
 
 greedy_set_cover_test : set_cover.o greedy_set_cover.o greedy_set_cover_test.o
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS)  $^ $(CPP_LIB_FLAGS) -o $@
 
 lazy_set_cover.o : lazy_set_cover.cc lazy_set_cover.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c lazy_set_cover.cc
@@ -74,7 +77,7 @@ lazy_set_cover_test.o : lazy_set_cover_test.cc lazy_set_cover.h set_cover.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c lazy_set_cover_test.cc
 
 lazy_set_cover_test : set_cover.o lazy_set_cover.o lazy_set_cover_test.o
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS)  $^ $(CPP_LIB_FLAGS) -o $@
 
 online_set_cover.o : online_set_cover.cc online_set_cover.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c online_set_cover.cc
@@ -83,7 +86,7 @@ online_set_cover_test.o : online_set_cover_test.cc online_set_cover.h set_cover.
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c online_set_cover_test.cc
 
 online_set_cover_test : set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o online_set_cover_test.o 
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS)  $^ $(CPP_LIB_FLAGS) -o $@
 
 util.o : util.cc util.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c util.cc
@@ -92,7 +95,7 @@ util_test.o : util_test.cc util.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c util_test.cc
 
 util_test : util.o util_test.o 
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS)  $^ $(CPP_LIB_FLAGS) -o $@
 
 evaluate.o : evaluate.cc evaluate.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c evaluate.cc
@@ -101,4 +104,4 @@ evaluate_test.o : evaluate_test.cc evaluate.h
 	$(CXX) $(CPP_INCLUDE_FLAGS) $(CXXFLAGS) -c evaluate_test.cc
 
 evaluate_test : evaluate.o evaluate_test.o set_cover.o lazy_set_cover.o greedy_set_cover.o online_set_cover.o util.o
-	$(CXX) $(CXXFLAGS) $(CPP_LIB_FLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS)  $^ $(CPP_LIB_FLAGS) -o $@

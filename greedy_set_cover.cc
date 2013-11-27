@@ -59,14 +59,17 @@ namespace incremental_atpg {
 
     handles_.reset(new map<string, pair<handle_t, uint64_t> >);
     heap_.reset(new fibonacci_heap<heap_data>);
-
+    //    LOG4CXX_WARN(greedy_set_cover_logger, 
+    //		 "set_infos now has " << set_infos_->size() << " sets.");
     for (auto const& set_info : *set_infos_) {
       uncovered = set_info.second.all_rules.size();
       ht = heap_->push(heap_data(set_info.first, uncovered));
       handle_value = make_pair(ht, uncovered);
-      LOG4CXX_INFO(greedy_set_cover_logger, "Updating handles_ with " << set_info.first 
-		   << " - ( x, " << handle_value.second << ").");
+      //      LOG4CXX_WARN(greedy_set_cover_logger, "Updating handles_ with " << set_info.first 
+      //		   << " - ( x, " << handle_value.second << ").");
       handles_->operator[](set_info.first) = handle_value;
+      //      LOG4CXX_WARN(greedy_set_cover_logger, "handles["<< set_info.first <<"]="
+      //		   << "(" << *ht << ", " << handles_->operator[](set_info.first).second <<").")
     }
     
   }
@@ -133,29 +136,38 @@ namespace incremental_atpg {
   }
 
   void GreedySetCover::UpdateSetsInHeap(const map<string, uint64_t>& key_changes) {
-    LOG4CXX_INFO(greedy_set_cover_logger,
-		 key_changes.size() << " keys to update in heap.");
+    //    LOG4CXX_WARN(greedy_set_cover_logger,
+    //		 key_changes.size() << " keys to update in heap.");
 
     for (auto const& change: key_changes) {
+      //      LOG4CXX_WARN(greedy_set_cover_logger, "handles_ has  " << handles_->size() << " handles.");
+      //      LOG4CXX_WARN(greedy_set_cover_logger, "cover_ has  " << cover_->size() << " sets.");
       if (handles_->find(change.first) == handles_->end()) {
-	if (change.first != cover_->back()) {
+	if (cover_->size() > 0 && change.first != cover_->back()) {
 	    LOG4CXX_WARN(greedy_set_cover_logger, "Key " << change.first
 			 << " no longer in handles_. Popped out?");
-	  }
+	} 
 	continue;
-      }
+      } 
+      //      LOG4CXX_WARN(greedy_set_cover_logger,
+      //		   key_changes.size() << " Key " << change.first << " is in handles_.");
+
       pair<handle_t, uint64_t>& handle_value = handles_->at(change.first);
       if (change.second > handle_value.second) {
 	LOG4CXX_ERROR(greedy_set_cover_logger, "Set " << change.first 
 		      << " does not have " << change.second << " rules.");
 	continue;
       }
+      //      LOG4CXX_WARN(greedy_set_cover_logger,
+      //		   " Set has more than " << change.second
+      //		   << " rules.");
+
       uint64_t new_value = handle_value.second - change.second;
       handle_t h = handle_value.first;
       heap_data new_heap_data(change.first, new_value);
       handles_->operator[](change.first) = make_pair(h, new_value);
       heap_->decrease(h, new_heap_data);
-      LOG4CXX_INFO(greedy_set_cover_logger, "Updated handle to " << *h << ".");
+      //      LOG4CXX_WARN(greedy_set_cover_logger, "Updated handle to " << *h << ".");
     }
   }
 

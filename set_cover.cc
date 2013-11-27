@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <memory>
 #include <list>
-#include <log4cxx/logger.h>
+#include "log4cxx/logger.h"
 
 namespace incremental_atpg {
   using std::vector;

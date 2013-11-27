@@ -29,7 +29,8 @@ class EvaluateTest : public testing::Test {
 
   //    void Compare(uint64_t at_num_rules, uint64_t for_time);
 TEST_F(EvaluateTest, Compare) {
-  evaluate->Compare(600000, 120);
-  //  evaluate->ShowRulesPerSet(sets);
+  evaluate->Compare(60000, 120);
+  //  evaluate->Compare(600000, 120);
+  //    evaluate->ShowRulesPerSet(sets);
 }
 }  // namespace incremental_atpg

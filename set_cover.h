@@ -51,7 +51,7 @@ namespace incremental_atpg {
   };
 
   struct RuleInfo {
-    const vector<string> all_sets;
+    vector<string> all_sets;
   RuleInfo(const vector<string>& all_sets)
   : all_sets(all_sets) { }
   };
